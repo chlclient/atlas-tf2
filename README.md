@@ -8,3 +8,4 @@
 
 # info
 you need clang-cl & cmake for this to compile (obviously)
+it has noCRT. also you need to compile in Debug or RelWithDebInfo otherwise, it will compile in "shipping" mode.
