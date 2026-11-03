@@ -116,7 +116,7 @@ target_compile_options(
     /GR-
     /Zl
     /fp:precise
-    /arch:AVX2
+    /arch:SSE2 
     /clang:-mbmi
     /clang:-mfma
     /clang:-ffreestanding
