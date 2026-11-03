@@ -5,3 +5,6 @@
 - @KidMorbid
 - NvK
 - Mexicans for riding this pasted cheat :rofl:
+
+# info
+you need clang-cl & cmake for this to compile (obviously)
