@@ -552,3 +552,38 @@ extern "C" int lua_crt_sprintf( char *buffer, const char *format, ... )
     writer.put( '\0' );
     return writer.m_written - 1;
 }
+
+// Lua needs floor/ceil but they aren't in libs/libm. SSE2-only, no libm calls.
+extern "C" double floor( double x )
+{
+    auto u = __builtin_bit_cast( unsigned long long, x );
+    int  e = static_cast< int >( ( u >> 52 ) & 0x7ff ) - 1023;
+    if ( e >= 52 ) return x;                      // integral, inf or nan
+    if ( e < 0 )                                  // |x| < 1
+    {
+        if ( ( u << 1 ) == 0 ) return x;          // +-0
+        return ( u >> 63 ) ? -1.0 : 0.0;
+    }
+    unsigned long long m = ( ~0ULL >> 12 ) >> e;
+    if ( ( u & m ) == 0 ) return x;               // already integral
+    if ( u >> 63 ) u += m;                        // negative: round magnitude up
+    u &= ~m;
+    return __builtin_bit_cast( double, u );
+}
+
+extern "C" double ceil( double x )
+{
+    auto u = __builtin_bit_cast( unsigned long long, x );
+    int  e = static_cast< int >( ( u >> 52 ) & 0x7ff ) - 1023;
+    if ( e >= 52 ) return x;
+    if ( e < 0 )
+    {
+        if ( ( u << 1 ) == 0 ) return x;
+        return ( u >> 63 ) ? -0.0 : 1.0;
+    }
+    unsigned long long m = ( ~0ULL >> 12 ) >> e;
+    if ( ( u & m ) == 0 ) return x;
+    if ( !( u >> 63 ) ) u += m;                   // positive: round magnitude up
+    u &= ~m;
+    return __builtin_bit_cast( double, u );
+}

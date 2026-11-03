@@ -239,14 +239,36 @@ namespace math
     }
 #endif
 
-    ATLAS_FORCE_INLINE constexpr f32 fmod( f32 value, f32 divisor )
+    // SSE2-only rounding helpers. Without SSE4.1 clang cannot lower __builtin_truncf / ceilf / floorf
+    // to an instruction and emits libm calls instead, which do not exist in a noCRT build.
+    // trunc must stay above ceil / floor / fmod since they build on it.
+    ATLAS_FORCE_INLINE constexpr f32 trunc( f32 value )
     {
-        return value - __builtin_truncf( value / divisor ) * divisor;
+        // beyond 2^23 every float is already integral (also passes inf / nan through)
+        if ( !( abs( value ) < 8388608.0f ) )
+        {
+            return value;
+        }
+
+        const f32 rounded{ static_cast< f32 >( _mm_cvttss_si32( _mm_set_ss( value ) ) ) };
+        return __builtin_copysignf( rounded, value ); // keeps -0.0f
     }
 
     ATLAS_FORCE_INLINE constexpr f32 ceil( f32 value )
     {
-        return __builtin_ceilf( value );
+        const f32 t{ trunc( value ) };
+        return t < value ? t + 1.0f : t;
+    }
+
+    ATLAS_FORCE_INLINE constexpr f32 floor( f32 value )
+    {
+        const f32 t{ trunc( value ) };
+        return t > value ? t - 1.0f : t;
+    }
+
+    ATLAS_FORCE_INLINE constexpr f32 fmod( f32 value, f32 divisor )
+    {
+        return value - trunc( value / divisor ) * divisor;
     }
 
     ATLAS_FORCE_INLINE f32 pow( f32 base, f32 exponent )

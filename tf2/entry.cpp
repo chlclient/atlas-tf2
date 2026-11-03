@@ -437,7 +437,7 @@ u32 ATLAS_STDCALL atlas_thread( void *parameter )
     // Indices
     {
         g_loading.enter( load_stage_t::indices );
-
+        
         g_tf2.m_chl_client_get_all_classes                            = g_api.get_index_pkg( HASH_CT( "vfunc.tf2.chl_client.get_all_classes" ) );
         g_tf2.m_chl_client_get_player_view                            = g_api.get_index_pkg( HASH_CT( "vfunc.tf2.chl_client.get_player_view" ) );
         g_tf2.m_chl_client_create_move                                = g_api.get_index_pkg( HASH_CT( "vfunc.tf2.chl_client.create_move" ) );

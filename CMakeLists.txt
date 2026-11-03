@@ -116,9 +116,15 @@ target_compile_options(
     /GR-
     /Zl
     /fp:precise
-    /arch:SSE2 
-    /clang:-mbmi
-    /clang:-mfma
+
+    /clang:-msse2
+    /clang:-mno-avx
+    /clang:-mno-avx2
+    /clang:-mno-fma
+    /clang:-mno-bmi
+    /clang:-mno-bmi2
+    /clang:-mtune=generic
+
     /clang:-ffreestanding
     /clang:-fno-exceptions
     /clang:-fno-rtti
@@ -128,8 +134,6 @@ target_compile_options(
     /clang:-fno-asynchronous-unwind-tables
     /clang:-fno-ident
     /clang:-fno-unroll-loops
-    /clang:-march=haswell
-    /clang:-mtune=haswell
 )
 
 target_link_options(
