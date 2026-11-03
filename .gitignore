@@ -1,0 +1,17 @@
+out/
+*build*/
+.idea/
+.vs/
+.vscode/
+CMakeUserPresets.json
+CMakeSettings.json
+*.user
+*.suo
+*.obj
+*.pdb
+*.ilk
+*.exe
+*.dll
+*.lib
+*.exp
+*.sublime-workspace

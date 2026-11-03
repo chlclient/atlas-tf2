@@ -1,0 +1,3 @@
+base/render/fonts/*.hpp
+base/libs/minimp3.h
+base/libs/stb_vorbis.c
